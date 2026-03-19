@@ -34,7 +34,7 @@ def m_split(m_tot, bpr):
 
     return m_fan, m_core
 
-
+far = 0.014
 m_tot = 187
 bpr = 10
 
@@ -65,7 +65,7 @@ def fuel_flow(far, m_core):
     m_dot_fuel = far * m_core
     return m_dot_fuel
 
-
+m_dot_fuel = fuel_flow(far, m_core)
 # ----------------------------------------------
 # TSFC Calculation
 # ----------------------------------------------
@@ -83,7 +83,7 @@ v_fan = 320
 v_core = 600
 v_af = 250
 
-far = 0.014
+
 
 
 # ----------------------------------------------
@@ -116,3 +116,46 @@ def mission_fuel(m_dot_fuel, time):
 time = 7200
 
 print(mission_fuel(m_dot_fuel, time))
+
+
+#-----------------------------------
+#    Equivilance ratio
+#-----------------------------------
+
+stio_ratio = 0.028 
+
+def equiv_ratio(m_core,m_dot_fuel):
+    phi = (m_dot_fuel/m_core) /stio_ratio
+    return phi
+phi = equiv_ratio(m_core,m_dot_fuel)
+
+print("phi =",phi)
+
+#--------------------------------------
+#        Combustion temperature
+#--------------------------------------
+
+
+"""" Estimate combustion temperature (K) for hydrogen-air mixture
+    T_air: inlet air temperature (K)
+    m_dot_fuel: fuel flow (kg/s)
+    m_air: air mass flow (kg/s)
+    Q_fuel: heating value (J/kg)
+    eta_c: combustion efficiency
+    c_p: specific heat of air (J/kg.K)"""
+
+q_fuel=120e6
+eta_c=0.98
+c_p=1005
+t_air = 288
+
+def comb_eff (t_air, q_fuel, eta_c, m_dot_fuel, m_core, c_p):
+    delta_value = eta_c *((q_fuel * m_dot_fuel)/ (m_core * c_p))
+    t_comb= t_air + delta_value
+    return t_comb
+
+t_comb = comb_eff(t_air, q_fuel, eta_c, m_dot_fuel, m_core, c_p)
+print("combustion temprature:", t_comb)
+
+
+
